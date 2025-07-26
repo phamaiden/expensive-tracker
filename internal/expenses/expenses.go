@@ -1,6 +1,9 @@
 package expenses
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Expense struct {
 	ID          int       `json:"id"`
@@ -35,4 +38,33 @@ func AddExpense(desc string, amt float64) (int, error) {
 	expenses = append(expenses, *newExp)
 
 	return expenseID, WriteJsonToFile(expenses)
+}
+
+func UpdateExpense(id int, desc string, amt float64) error {
+	expenses, err := ReadJsonFromFile()
+	if err != nil {
+		return err
+	}
+
+	var updatedExps []Expense
+	var foundExp bool
+
+	for _, e := range expenses {
+		if e.ID == id {
+			foundExp = true
+			if desc != "" {
+				e.Description = desc
+			}
+			if amt >= 0 {
+				e.Amount = amt
+			}
+		}
+		updatedExps = append(updatedExps, e)
+	}
+
+	if !foundExp {
+		return fmt.Errorf("Expense (ID: %v) doesn't exist", id)
+	}
+
+	return WriteJsonToFile(updatedExps)
 }
