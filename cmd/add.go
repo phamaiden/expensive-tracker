@@ -26,7 +26,7 @@ var addCmd = &cobra.Command{
 	Long:  "Add an expense with a description and amount",
 	Run: func(cmd *cobra.Command, args []string) {
 		if Amount < 0 {
-			fmt.Println("amount cannot be negative")
+			fmt.Println("Amount cannot be negative")
 			return
 		}
 		id, err := expenses.AddExpense(Description, Amount)

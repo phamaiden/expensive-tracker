@@ -68,3 +68,24 @@ func UpdateExpense(id int, desc string, amt float64) error {
 
 	return WriteJsonToFile(updatedExps)
 }
+
+func DeleteExpense(id int) error {
+	expenses, err := ReadJsonFromFile()
+	if err != nil {
+		return err
+	}
+
+	var foundExp bool = false
+	for i, exp := range expenses {
+		if exp.ID == id {
+			foundExp = true
+			expenses = append(expenses[:i], expenses[i+1:]...)
+		}
+	}
+
+	if !foundExp {
+		return fmt.Errorf("Expense (ID: %v) not found", id)
+	}
+
+	return WriteJsonToFile(expenses)
+}
