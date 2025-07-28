@@ -14,8 +14,8 @@ var Amount float64
 func init() {
 
 	rootCmd.AddCommand(addCmd)
-	addCmd.Flags().StringVarP(&Description, "description", "d", "", "expense description (required)")
-	addCmd.Flags().Float64VarP(&Amount, "amount", "a", 0, "expense amount (required)")
+	addCmd.Flags().StringVarP(&Description, "desc", "d", "", "expense description (required)")
+	addCmd.Flags().Float64VarP(&Amount, "amt", "a", 0, "expense amount (required)")
 	addCmd.MarkFlagRequired("desc")
 	addCmd.MarkFlagRequired("amt")
 }

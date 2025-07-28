@@ -29,7 +29,7 @@ func AddExpense(desc string, amt float64) (int, error) {
 
 	var expenseID int
 	if len(expenses) > 0 {
-		expenseID = expenses[len(expenses)-1].ID
+		expenseID = expenses[len(expenses)-1].ID + 1
 	} else {
 		expenseID = 1
 	}
@@ -88,4 +88,46 @@ func DeleteExpense(id int) error {
 	}
 
 	return WriteJsonToFile(expenses)
+}
+
+func ListExpenses() error {
+	expenses, err := ReadJsonFromFile()
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%-3s %-10s %-13s %-5s\n", "ID", "Date", "Description", "Amount")
+
+	for _, exp := range expenses {
+		fmt.Printf("%-3d %-10s %-13s $%-5.2f\n", exp.ID, exp.Date.Format(time.DateOnly), exp.Description, exp.Amount)
+	}
+
+	return nil
+}
+
+func ExpenseSummary(month string, year int) error {
+	expenses, err := ReadJsonFromFile()
+	if err != nil {
+		return err
+	}
+
+	if month == "all" {
+		var sum float64 = 0
+		for _, exp := range expenses {
+			if exp.Date.Year() == time.Now().Year() {
+				sum += exp.Amount
+			}
+		}
+		fmt.Printf("Total expenses this year: $%.2f\n", sum)
+		return nil
+	}
+	var sum float64 = 0
+	for _, exp := range expenses {
+		if exp.Date.Month().String() == month && exp.Date.Year() == year {
+			sum += exp.Amount
+		}
+	}
+
+	fmt.Printf("Total expenses for %s %d: $%.2f\n", month, year, sum)
+	return nil
 }
